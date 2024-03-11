@@ -31,7 +31,7 @@
             </div>
             <div class="chat-item-content">
               <h3>{{ chat.name }}</h3>
-              <p>{{ chat.message }}</p>
+              <div v-html="parseMd(chat.message)"></div>
             </div>
           </div>
         </li>
@@ -55,6 +55,7 @@ import { ref, watch } from "vue";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { runGeminiChat } from "@/lib/request";
+import { marked } from "marked";
 
 const chatHistory = ref<{ name: string; message: any; avatar: string }[]>([]);
 const inputWords = ref("");
@@ -78,6 +79,11 @@ const sendChat = () => {
     avatar: "https://avatars.githubusercontent.com/u/1407692?v=4",
   });
   inputWords.value = "";
+};
+
+// 转换 markdown
+const parseMd = (md: string) => {
+  return marked(md);
 };
 
 watch(chatHistory, () => {

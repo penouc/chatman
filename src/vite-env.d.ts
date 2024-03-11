@@ -6,6 +6,8 @@ declare module '*.vue' {
   export default component
 }
 
+declare module '*.js'
+
 interface Window {
   // expose in the `electron/preload/index.ts`
   ipcRenderer: import('electron').IpcRenderer
