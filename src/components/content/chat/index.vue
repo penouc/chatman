@@ -1,10 +1,7 @@
 <template>
   <div class="chat-wrap">
-    <div class="chat-header">
-      <h3>Chat</h3>
-    </div>
     <div class="chat-content">
-      <ul>
+      <ul class="chat-list">
         <li>
           <div class="chat-item">
             <div class="chat-item-avatar">
@@ -38,7 +35,8 @@
       </ul>
     </div>
     <div class="chat-footer">
-      <Input
+      <Textarea
+        class="chat-textarea"
         type="text"
         placeholder="Type a message"
         v-model="inputWords"
@@ -52,10 +50,11 @@
 </template>
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { runGeminiChat } from "@/lib/request";
 import { marked } from "marked";
+import { set } from "@vueuse/core";
 
 const chatHistory = ref<{ name: string; message: any; avatar: string }[]>([]);
 const inputWords = ref("");
@@ -86,13 +85,13 @@ const parseMd = (md: string) => {
   return marked(md);
 };
 
-watch(chatHistory, () => {
-  loading.value = false;
-
+// 监听 chatHistory 变化
+watch(chatHistory.value, (newVal) => {
+  // 滚动到底部
   const chatContent = document.querySelector(".chat-content");
-  if (chatContent) {
-    chatContent.scrollTop = chatContent.scrollHeight;
-  }
+  setTimeout(() => {
+    chatContent?.scrollTo(0, chatContent.scrollHeight);
+  }, 100);
 });
 </script>
 <style lang="less">
@@ -102,28 +101,24 @@ watch(chatHistory, () => {
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
-  ::selection {
-    background-color: transparent;
-  }
-
-  .chat-header {
-    height: 50px;
-    background-color: #000000;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0 10px;
-    justify-content: flex-end;
-  }
 
   .chat-content {
     height: 100%;
     flex: 1;
-    background-color: #000000;
+    background-color: hsl(240, 10%, 3.9%);
     margin-top: 4px;
     overflow-y: scroll;
+    color: white;
 
-    ul {
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #e0e0e0;
+      border-radius: 5px;
+    }
+
+    .chat-list {
       list-style: none;
       padding: 0;
       margin: 0;
@@ -144,14 +139,17 @@ watch(chatHistory, () => {
           .chat-item-content {
             padding-left: 10px;
             width: calc(100% - 40px);
+            font-size: 12px;
+            line-height: 24px;
+
             h3 {
               margin: 0;
-              font-size: 16px;
+              font-size: 14px;
               color: white;
             }
             p {
               margin: 0;
-              font-size: 14px;
+              font-size: 12px;
               color: #e0e0e0;
               word-break: break-word;
             }
@@ -162,18 +160,22 @@ watch(chatHistory, () => {
   }
 
   .chat-footer {
-    height: 50px;
-    background-color: #000000;
+    height: 80px;
+    background-color: hsl(240, 10%, 3.9%);
     display: flex;
     flex-direction: row;
-    align-items: center;
-    padding: 0 10px;
+    align-items: flex-end;
+    padding: 0 10px 10px 10px;
 
-    input {
+    .chat-textarea {
       margin-right: 10px;
       color: white;
-      ::selection {
+      &::-webkit-scrollbar {
+        width: 5px;
+      }
+      &::-webkit-scrollbar-thumb {
         background-color: #e0e0e0;
+        border-radius: 5px;
       }
     }
   }

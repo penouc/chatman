@@ -46,6 +46,8 @@
     "clsx": "^2.1.0",
     "electron-store": "^8.2.0",
     "less": "^4.2.0",
+    "lucide-vue": "^0.354.0",
+    "lucide-vue-next": "^0.356.0",
     "marked": "^12.0.1",
     "radix-vue": "^1.5.1",
     "tailwind-merge": "^2.2.1",
